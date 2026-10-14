@@ -1,0 +1,203 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HASHMI Classes | Learn Online</title>
+<style>
+:root{--bg:#f4f7fb;--card:#fff;--text:#17243b;--primary:#2563eb;--muted:#64748b}
+*{box-sizing:border-box}
+body{margin:0;font-family:Arial,sans-serif;background:var(--bg);color:var(--text);transition:.2s}
+body.dark{--bg:#111827;--card:#1f2937;--text:#f3f4f6;--muted:#cbd5e1;--primary:#60a5fa}
+header{background:var(--card);padding:16px 5%;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;box-shadow:0 2px 10px #0001}
+.logo{font-size:22px;font-weight:bold;color:var(--primary)}
+nav{display:flex;gap:14px;flex-wrap:wrap}
+a{color:var(--primary);text-decoration:none}
+nav a{font-weight:bold}
+button,input,select{font:inherit;padding:11px;border-radius:8px;border:1px solid #cbd5e1}
+button{cursor:pointer;background:var(--primary);color:white;border:0;font-weight:bold}
+button:hover{opacity:.85}
+.secondary{background:#64748b}
+main{max-width:1100px;margin:auto;padding:24px 16px}
+.hero{padding:35px 25px;border-radius:18px;background:linear-gradient(120deg,#1d4ed8,#7c3aed);color:white}
+.hero h1{font-size:clamp(28px,5vw,44px);margin:0 0 12px}
+.hero p{line-height:1.6}
+.stats,.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px;margin:22px 0}
+.stat,.course,.panel{background:var(--card);padding:20px;border-radius:14px;box-shadow:0 3px 12px #0000000b}
+.stat strong{font-size:25px;color:var(--primary)}
+.toolbar{display:flex;gap:10px;flex-wrap:wrap;margin:18px 0}
+.toolbar input{flex:1;min-width:180px}
+.course h3{margin-top:0}
+.tag{color:var(--primary);font-size:13px;font-weight:bold}
+.course p,.muted{color:var(--muted);line-height:1.5}
+.course button{margin:4px 3px 0 0}
+section{scroll-margin-top:20px;margin-top:30px}
+footer{text-align:center;padding:28px;color:var(--muted)}
+progress{width:100%;height:14px}
+#notice{position:fixed;bottom:15px;left:50%;transform:translateX(-50%);background:#17243b;color:white;padding:12px 18px;border-radius:10px;display:none;max-width:90%;z-index:5}
+@media(max-width:550px){header{align-items:flex-start}nav{font-size:14px}.hero{padding:26px 18px}}
+</style>
+</head>
+<body>
+<header>
+  <div class="logo">🎓 HASHMI Classes</div>
+  <nav>
+    <a href="#home">Home</a><a href="#courses">Courses</a>
+    <a href="#progress">Progress</a><a href="#quiz">Quiz</a>
+  </nav>
+  <div>
+    <button class="secondary" onclick="toggleDark()">🌙</button>
+    <button onclick="login()">Login</button>
+  </div>
+</header>
+
+<main>
+<section class="hero" id="home">
+  <h1>Learn Today. Lead Tomorrow.</h1>
+  <p>Welcome to HASHMI Classes — your learning space for programming,
+  computer science, mathematics and more.</p>
+  <button onclick="document.querySelector('#courses').scrollIntoView({behavior:'smooth'})">Explore Courses →</button>
+</section>
+
+<div class="stats">
+  <div class="stat">📚 <strong id="courseCount">8</strong><br>Learning topics</div>
+  <div class="stat">⭐ <strong id="savedCount">0</strong><br>Saved topics</div>
+  <div class="stat">✅ <strong id="doneCount">0</strong><br>Topics completed</div>
+</div>
+
+<section id="courses">
+  <h2>Explore Learning Topics</h2>
+  <p class="muted">Choose a topic and watch educational videos on YouTube.</p>
+  <div class="toolbar">
+    <input id="search" placeholder="🔍 Search courses..." oninput="render()">
+    <select id="filter" onchange="render()">
+      <option value="All">All topics</option>
+      <option>Programming</option><option>Web Development</option>
+      <option>Computer Science</option><option>Mathematics</option>
+    </select>
+  </div>
+  <div class="grid" id="courseList"></div>
+</section>
+
+<section id="progress" class="panel">
+  <h2>📈 My Learning Progress</h2>
+  <p id="progressText">0 of 8 topics completed</p>
+  <progress id="progressBar" value="0" max="8"></progress>
+  <p class="muted">Mark a topic completed after studying it.</p>
+  <button class="secondary" onclick="resetProgress()">Reset Progress</button>
+</section>
+
+<section id="quiz" class="panel">
+  <h2>🧠 Quick Computer Quiz</h2>
+  <p id="question"></p>
+  <div id="answers" class="toolbar"></div>
+  <p id="quizResult" aria-live="polite"></p>
+  <button onclick="nextQuiz()">Next Question →</button>
+</section>
+
+<section id="account" class="panel">
+  <h2>👤 Student Profile</h2>
+  <p id="welcome">You are browsing as a guest.</p>
+  <input id="studentName" placeholder="Enter your name">
+  <button onclick="login()">Save Name</button>
+  <p class="muted">Demo profile saved only in this browser.</p>
+</section>
+</main>
+
+<footer>© 2026 HASHMI Classes · Learn at your own pace</footer>
+<div id="notice" role="status"></div>
+
+<script>
+const topics=[
+ {name:"C Programming",cat:"Programming",desc:"Variables, loops, arrays and functions.",q:"C programming tutorial for beginners"},
+ {name:"Python Programming",cat:"Programming",desc:"Learn Python from basics to projects.",q:"Python full course beginners"},
+ {name:"HTML & CSS",cat:"Web Development",desc:"Build and style your first website.",q:"HTML CSS full course beginners"},
+ {name:"JavaScript",cat:"Web Development",desc:"Make websites interactive with JavaScript.",q:"JavaScript full course beginners"},
+ {name:"Computer Fundamentals",cat:"Computer Science",desc:"Hardware, software, memory and operating systems.",q:"Computer fundamentals tutorial"},
+ {name:"DBMS & SQL",cat:"Computer Science",desc:"Learn databases, queries and SQL.",q:"DBMS SQL tutorial for beginners"},
+ {name:"Digital Logic",cat:"Computer Science",desc:"Logic gates, Boolean algebra and K-maps.",q:"Digital logic gates K map tutorial"},
+ {name:"Mathematics",cat:"Mathematics",desc:"Practice algebra and important concepts.",q:"basic mathematics lessons"}
+];
+let saved=JSON.parse(localStorage.getItem("vc_saved")||"[]");
+let done=JSON.parse(localStorage.getItem("vc_done")||"[]");
+let quizIndex=0,quizLocked=false;
+const quizzes=[
+ {q:"Which language is commonly used for web page structure?",a:["HTML","SQL","C"],correct:0},
+ {q:"Which symbol starts a comment in Python?",a:["//","#","<!--"],correct:1},
+ {q:"What does CPU stand for?",a:["Central Processing Unit","Computer Personal Unit","Control Program Utility"],correct:0},
+ {q:"Which language is used to style web pages?",a:["CSS","SQL","C++"],correct:0},
+ {q:"Which one is a database query language?",a:["HTML","SQL","CSS"],correct:1}
+];
+function notify(msg){
+ const n=document.getElementById("notice");n.textContent=msg;n.style.display="block";
+ clearTimeout(window.noticeTimer);window.noticeTimer=setTimeout(()=>n.style.display="none",2400);
+}
+function persist(){
+ localStorage.setItem("vc_saved",JSON.stringify(saved));
+ localStorage.setItem("vc_done",JSON.stringify(done));updateStats();
+}
+function render(){
+ const term=document.getElementById("search").value.toLowerCase();
+ const filter=document.getElementById("filter").value;
+ const list=document.getElementById("courseList");list.innerHTML="";
+ const filtered=topics.filter(t=>(t.name+" "+t.desc+" "+t.cat).toLowerCase().includes(term)&&(filter==="All"||t.cat===filter));
+ if(!filtered.length){list.innerHTML="<p>No topics found. Try another search.</p>";return}
+ filtered.forEach(t=>{
+  const i=topics.indexOf(t),isSaved=saved.includes(i),isDone=done.includes(i);
+  const card=document.createElement("article");card.className="course";
+  const title=document.createElement("h3");title.textContent=t.name;
+  const tag=document.createElement("div");tag.className="tag";tag.textContent=t.cat;
+  const desc=document.createElement("p");desc.textContent=t.desc;
+  const watch=document.createElement("button");watch.textContent="▶ Watch Videos";
+  watch.onclick=()=>window.open("https://www.youtube.com/results?search_query="+encodeURIComponent(t.q)," _blank".trim());
+  const bookmark=document.createElement("button");bookmark.className="secondary";bookmark.textContent=isSaved?"★ Saved":"☆ Wishlist";
+  bookmark.onclick=()=>{saved=isSaved?saved.filter(x=>x!==i):[...saved,i];persist();render()};
+  const complete=document.createElement("button");complete.className="secondary";complete.textContent=isDone?"✓ Completed":"Mark Complete";
+  complete.onclick=()=>{done=isDone?done.filter(x=>x!==i):[...done,i];persist();render()};
+  card.append(title,tag,desc,watch,bookmark,complete);list.append(card);
+ });
+}
+function updateStats(){
+ document.getElementById("savedCount").textContent=saved.length;
+ document.getElementById("doneCount").textContent=done.length;
+ document.getElementById("courseCount").textContent=topics.length;
+ document.getElementById("progressText").textContent=done.length+" of "+topics.length+" topics completed";
+ document.getElementById("progressBar").max=topics.length;
+ document.getElementById("progressBar").value=done.length;
+}
+function toggleDark(){
+ document.body.classList.toggle("dark");
+ localStorage.setItem("vc_dark",document.body.classList.contains("dark")?"1":"0");
+}
+function resetProgress(){
+ if(confirm("Reset all completed topics?")){done=[];persist();render();notify("Progress reset.") }
+}
+function login(){
+ const name=document.getElementById("studentName").value.trim()||localStorage.getItem("vc_name")||"";
+ if(!name){notify("Enter your name first.");document.getElementById("studentName").focus();return}
+ localStorage.setItem("vc_name",name);
+ document.getElementById("welcome").textContent="Welcome, "+name+"! Keep learning.";
+ notify("Profile saved!");
+}
+function showQuiz(){
+ quizLocked=false;document.getElementById("quizResult").textContent="";
+ const q=quizzes[quizIndex%quizzes.length];
+ document.getElementById("question").textContent=(quizIndex%quizzes.length+1)+". "+q.q;
+ const box=document.getElementById("answers");box.innerHTML="";
+ q.a.forEach((answer,i)=>{
+  const b=document.createElement("button");b.className="secondary";b.textContent=answer;
+  b.onclick=()=>{
+   if(quizLocked)return;quizLocked=true;
+   document.getElementById("quizResult").textContent=i===q.correct?"Correct! 🎉":"Not quite. Correct answer: "+q.a[q.correct];
+  };box.append(b);
+ });
+}
+function nextQuiz(){quizIndex++;showQuiz()}
+if(localStorage.getItem("vc_dark")==="1")document.body.classList.add("dark");
+const oldName=localStorage.getItem("vc_name");
+if(oldName){document.getElementById("studentName").value=oldName;document.getElementById("welcome").textContent="Welcome back, "+oldName+"! Keep learning."}
+render();updateStats();showQuiz();
+</script>
+</body>
+</html>
